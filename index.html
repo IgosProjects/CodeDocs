@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>CodeDocs</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">CodeDocs</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#javascript-game-with-kaboom" class="nav-link">Javascript Game with kaboom.</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="javascript-game-with-kaboom">Javascript Game with kaboom.</h1>
+<style>
+    /* Add some basic styling for the code box */
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    /* Optional: Style the code for better readability */
+    code {
+      color: #333;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+    }
+
+       .copy-button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      cursor: pointer;
+    }
+  </style>
+<p>Today we will be learning how to make a dino-ish game in javascript lets start</p>
+<p>1. Make a index.html file. the index.html file needs 2 elements called a head and a body</p>
+<p>2. Make a new kaboom.js game by running npm i kaboom in your project this will
+make a easy way for you to use servers why? kaboom.js adds the npm run dev function
+</p>
+<p>3. paste this in your html file</p>
+<pre>
+    <code>
+    <script>
+// import kaboom lib
+import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
+
+// initialize kaboom context
+kaboom();
+
+// add a piece of text at position (120, 80)
+add([
+    text("hello"),
+    pos(120, 80),
+]);
+</script>
+    </code>
+  </pre>
+<p> This will make a piece of text on the screen.</p>
+<p>This is like legos kinda</p>
+<p>Okay lets start  replace the code with</p>
+<pre>
+    <code>
+
+/// start the game
+kaboom()
+
+// define gravity
+setGravity(2400)
+
+// load a default sprite
+loadBean()
+
+// add character to screen, from a list of components
+const player = add([
+    sprite("bean"),  // renders as a sprite
+    pos(120, 80),    // position in world
+    area(),          // has a collider
+    body(),          // responds to physics and gravity
+])
+
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+
+<p>and start. After that lets make it jump add this code to your script</p>
+<p>&lt;<pre>
+    <code></p>
+<p>onKeyPress("space", () =&gt; {
+    // .jump() is provided by the body() component
+    player.jump()
+})
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span></p>
+<p></pre>
+<br />
+<p>now before we run lets add a platorm for the player to stand on add this code</p></p>
+<pre>
+    <code>
+add([
+    rect(width(), 48),
+    pos(0, height() - 48),
+    outline(4),
+    area(),
+    body({ isStatic: true }),
+    color(127, 200, 255),
+])
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+
+  </pre>
+<p>Woah! That looks like a lot, but it's actually really simple, let's look at each component
+
+rect() renders a rectangle. It accepts 2 arguments, the width and height, which we give it the game width (returned by width()) and height of 48 pixels
+pos() position. We give it a x: 0 and y: height() - 48 so it sits right on the bottom of the screen
+outline() renders an outline of 4 pixels
+area() adds a collider to it
+body({ isStatic: true }) the object won't move, and all non static objects won't move past it
+color() makes it render with an RGB color, we give it a R: 127 G: 200 B: 255 which is a blue-ish color</p>
+<p>Pretty straightforward! Refresh the game and you should see our Bean is now safely landed on a static blue platform.</p>
+<p>Let's also make sure our Bean can only jump when isGrounded.</p>
+<pre>
+    <code>
+onKeyPress("space", () => {
+    if (bean.isGrounded()) {
+        bean.jump();
+    }
+});
+
+
+
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>isGrounded() is another function provided by body() component which checks if currently landed on a platform. Now our game is slightly more physically correct.
+
+Bean loves challanges. Let's start adding in obstacles to jump over! Time to build a game object from components again.</p>
+<pre>
+    <code>
+// add tree
+add([
+    rect(48, 64),
+    area(),
+    outline(4),
+    pos(width(), height() - 48),
+    anchor("botleft"),
+    color(255, 180, 255),
+    move(LEFT, 240),
+]);
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Challenger appears! Try jumping over it.
+
+Oh but it's.. not really fun! Or rather, there's no feedback to whether we managed to jump over the ramp. Let's add some feedback.
+
+To do this we'll need to check for collision between the two.
+
+First we'll need to give the tree a tag. Any game object can have any number of tags, they're kinda like components but much more light weight. We often use tags to quickly describe behaviors for a group of objects.</p>
+<pre>
+    <code>
+// add tree
+add([
+    rect(48, 64),
+    area(),
+    outline(4),
+    pos(width(), height() - 48),
+    anchor("botleft"),
+    color(255, 180, 255),
+    move(LEFT, 240),
+    "tree", // add a tag here
+]);
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+
+<p>To add a tag we simply put a string in the component array. Then we can check for collision between Bean and any object with tag "tree".</p>
+<pre>
+    <code>
+bean.onCollide("tree", () => {
+    addKaboom(bean.pos);
+    shake();
+});
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+
+<p>.onCollide() is a function provided by the area() component. It registers an event that runs every time the object collides with another object with a certain tag, passed by the first argument. In this case, it means every time Bean collides with another game obj with tag "tree", run the callback.
+
+Inside the callback we're doing 2 things. addKaboom() spawns an explosion animation which is basically kaboom's logo, it accepts 1 argument the position to spawn, which we pass in the player's current position with .pos (which is provided by the pos() component).
+
+The second thing is shake(), which just shakes the screen,</p>
+<p><img src="https://kaboomjs.com/static/doc/intro/hit.gif"></p>
+<p>Here's a trick. Try pressing F1 in the game. See all the blue outlines? This is inspect mode and it'll show all the bounding boxes of every game obj with area() component. Also try hovering over each game object to inspect its states like position and tags.</p>
+<p>Now it's time to add more trees. How can we keep them spawning constantly?
+
+Let's try the loop() function, which performs an action every x seconds.</p>
+<pre>
+    <code>
+loop(1, () => {
+    // add tree
+    add([
+        rect(48, 64),
+        area(),
+        outline(4),
+        pos(width(), height() - 48),
+        anchor("botleft"),
+        color(255, 180, 255),
+        move(LEFT, 240),
+        "tree", // add a tag here
+    ]);
+});
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Let's just put the tree adding code inside a loop(). The first argument is the time in seconds here, so it'll spawn a tree every 1 seconds.
+
+Sick! Lots of trees coming to you now. Now we already have most of the game mechanics done. Some improvements we can make:
+
+It might be better if trees all have different random heights. We can use rand() to assign different value to the tree's rect height:</p>
+
+<pre>
+    <code>
+function spawnTree() {
+    add([
+        // the tree components
+    ]);
+    wait(rand(0.5, 1.5), () => {
+        spawnTree();
+    });
+}
+
+spawnTree();
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>See? We're calling spawnTree() recursively / endlessly, with a random interval between 0.5 - 1.5 seconds each time.
+
+Before adding a score counter, let's actually complete the game loop first, by sending player to a gameover scene when they hit a tree. We can achieve this with kaboom's scene() system</p>
+<pre>
+    <code>
+scene("game", () => {
+    add([
+        sprite("bean"),
+    ])
+})
+
+scene("lose", () => {
+    add([
+        text("Game Over"),
+    ])
+})
+
+go("game")
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Consider this example above, we're declaring 2 scenes here, "game" and "lose". The function we pass to scene() is the function to run when this scene is activated (by go()). In this case, we want to add a "bean" sprite on "game" scene, and want to add a "Game Over" text on the "lose" scene.
+
+Let's first move everything game code we have into a scene.</p>
+
+<pre>
+    <code>
+// don't move these init / loader functions
+kaboom()
+loadSprite("bean", "sprites/bean.png");
+
+scene("game", () => {
+    // add bean
+    // add platform
+    // spawn trees
+});
+
+go("game")
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Try this, this shouldn't change any of your game's content.
+
+Then we can add a "lose" scene independent to your core game content here</p>
+
+<pre>
+    <code>
+scene("lose", () => {
+    add([
+        text("Game Over"),
+        pos(center()),
+        anchor("center"),
+    ])
+})
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>So in the "lose" scene, we'll add a piece of text in the center says "Game Over" (text() is a component that renders text). Go ahead and go to this scene when player collides with a tree:</p>
+<pre>
+    <code>
+player.onCollide("tree", () => {
+    addKaboom(bean.pos);
+    shake();
+    go("lose"); // go to "lose" scene here
+});
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Ok! Now we've arrived at the final part of our game: score counter.</p>
+<pre>
+    <code>
+let score = 0;
+const scoreLabel = add([
+    text(score),
+    pos(24, 24)
+])
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>Here we've declared a number variable to store the score, and added a game obj with text() component to display the text.
+
+Let's keep it simple and just use time as score.</p>
+<pre>
+    <code>
+// increment score every frame
+onUpdate(() => {
+    score++;
+    scoreLabel.text = score;
+});
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<p>We can use the onUpdate() function, which takes a function, and runs it every frame. In this case we're going to increment the score, and update the score label's text every frame.
+
+(todo)
+
+Full game code here:</p>
+<pre>
+    <code>
+const FLOOR_HEIGHT = 48;
+const JUMP_FORCE = 800;
+const SPEED = 480;
+
+// initialize context
+kaboom();
+
+// load assets
+loadSprite("bean", "sprites/bean.png");
+
+scene("game", () => {
+
+    // define gravity
+    setGravity(1600);
+
+    // add a game object to screen
+    const player = add([
+        // list of components
+        sprite("bean"),
+        pos(80, 40),
+        area(),
+        body(),
+    ]);
+
+    // floor
+    add([
+        rect(width(), FLOOR_HEIGHT),
+        outline(4),
+        pos(0, height()),
+        anchor("botleft"),
+        area(),
+        body({ isStatic: true }),
+        color(127, 200, 255),
+    ]);
+
+    function jump() {
+        if (player.isGrounded()) {
+            player.jump(JUMP_FORCE);
+        }
+    }
+
+    // jump when user press space
+    onKeyPress("space", jump);
+    onClick(jump);
+
+    function spawnTree() {
+
+        // add tree obj
+        add([
+            rect(48, rand(32, 96)),
+            area(),
+            outline(4),
+            pos(width(), height() - FLOOR_HEIGHT),
+            anchor("botleft"),
+            color(255, 180, 255),
+            move(LEFT, SPEED),
+            "tree",
+        ]);
+
+        // wait a random amount of time to spawn next tree
+        wait(rand(0.5, 1.5), spawnTree);
+
+    }
+
+    // start spawning trees
+    spawnTree();
+
+    // lose if player collides with any game obj with tag "tree"
+    player.onCollide("tree", () => {
+        // go to "lose" scene and pass the score
+        go("lose", score);
+        burp();
+        addKaboom(player.pos);
+    });
+
+    // keep track of score
+    let score = 0;
+
+    const scoreLabel = add([
+        text(score),
+        pos(24, 24),
+    ]);
+
+    // increment score every frame
+    onUpdate(() => {
+        score++;
+        scoreLabel.text = score;
+    });
+
+});
+
+scene("lose", (score) => {
+
+    add([
+        sprite("bean"),
+        pos(width() / 2, height() / 2 - 80),
+        scale(2),
+        anchor("center"),
+    ]);
+
+    // display score
+    add([
+        text(score),
+        pos(width() / 2, height() / 2 + 80),
+        scale(2),
+        anchor("center"),
+    ]);
+
+    // go back to game with space is pressed
+    onKeyPress("space", () => go("game"));
+    onClick(() => go("game"));
+
+});
+
+go("game");
+    </code>
+   <span class="copy-button" onclick="copyCode()">📋 Copy</span>
+
+  </pre>
+<script>
+
+    function copyCode() {
+      const codeBox = document.getElementById('codeBox');
+      const code = codeBox.querySelector('code').innerText;
+
+      navigator.clipboard.writeText(code)
+        .then(() => alert('Code copied to clipboard!'))
+        .catch(err => console.error('Unable to copy code', err));
+    }
+  </script></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.5.3
+Build Date UTC : 2023-12-13 16:52:20.731437+00:00
+-->
